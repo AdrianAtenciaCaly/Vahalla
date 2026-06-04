@@ -69,7 +69,7 @@ Navegador → Valhalla.Mvc → VikingApiService (HttpClient tipado) → Valhalla
 - `IHttpClientFactory` con cliente tipado
 - `IOptions<T>` para configuración fuertemente tipada
 - Razor Views con Tag Helpers
-- Entity Framework Core (en `Valhalla.Infrastructure`)
+- Entity Framework Core (en `Valhalla.Infrastructure`) — base de datos en memoria (`InMemory`)
 - Bootstrap 5 + tipografía Cinzel / Crimson Pro (interfaz)
 
 ---
@@ -82,7 +82,6 @@ Antes de clonar y ejecutar el proyecto asegúrate de tener instalado:
 |---|---|---|
 | .NET SDK | 8.0 | https://dotnet.microsoft.com/download |
 | Visual Studio | 2022 (17.8+) | https://visualstudio.microsoft.com |
-| SQL Server | 2019 o superior | https://www.microsoft.com/sql-server |
 | Git | cualquiera | https://git-scm.com |
 
 > También puedes usar **VS Code** con la extensión `C# Dev Kit` en lugar de Visual Studio.
@@ -100,17 +99,11 @@ cd valhalla
 
 ## Configuración
 
-### 1. Cadena de conexión — `Valhalla.Api`
+### 1. Base de datos — `Valhalla.Api`
 
-Abre `Valhalla.Api/appsettings.json` y actualiza la cadena de conexión con tus datos de SQL Server:
+> ⚠️ **La base de datos es en memoria (`InMemory`).** No requiere SQL Server ni ninguna instalación adicional. Los datos se pierden al detener la aplicación — esto es intencional para desarrollo y demostración.
 
-```json
-{
-  "ConnectionStrings": {
-    "DefaultConnection": "Server=localhost;Database=ValhallDb;Trusted_Connection=True;TrustServerCertificate=True"
-  }
-}
-```
+No es necesario modificar ninguna cadena de conexión. La configuración ya está lista en `Program.cs` de `Valhalla.Api`.
 
 ### 2. URL del API — `Valhalla.Mvc`
 
@@ -126,13 +119,9 @@ Abre `Valhalla.Mvc/appsettings.json` y verifica que la URL apunta al puerto dond
 
 > El puerto `7041` es el valor por defecto en desarrollo. Si Visual Studio asigna otro puerto al Api, actualiza este valor.
 
-### 3. Aplicar migraciones de base de datos
+### 3. Migraciones
 
-Desde la raíz de la solución ejecuta:
-
-```bash
-dotnet ef database update --project Valhalla.Infrastructure --startup-project Valhalla.Api
-```
+> No se requieren migraciones. Al usar base de datos en memoria, EF Core crea el esquema automáticamente en cada arranque.
 
 ---
 
