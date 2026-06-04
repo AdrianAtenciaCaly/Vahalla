@@ -1,0 +1,240 @@
+﻿@model Valhalla.Shared.DTOs.VikingDto
+
+@{
+    ViewData["Title"] = "Editar Vikingo";
+}
+
+<style>
+    @@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Crimson+Pro:ital,wght@0,300;0,400;1,300&display=swap');
+
+    :root {
+        --gold: #c9a84c;
+        --gold-light: #e8c96a;
+        --iron: #8a8fa8;
+        --bg: #0e0f14;
+        --text: #d4d6e0;
+        --text-muted: #6b6f82;
+        --border: rgba(201,168,76,0.15);
+        --border-input: rgba(138,143,168,0.25);
+        --border-focus: rgba(201,168,76,0.6);
+        --accent: rgba(201,168,76,.06);
+    }
+
+    body {
+        background: var(--bg);
+        color: var(--text);
+        font-family: 'Crimson Pro', Georgia, serif;
+    }
+
+    .form-header {
+        padding: 2.5rem 0 2rem;
+        border-bottom: 1px solid var(--border);
+        margin-bottom: 2.5rem;
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+    }
+
+    .form-title {
+        font-family: 'Cinzel', serif;
+        font-size: 1.6rem;
+        font-weight: 700;
+        color: var(--gold);
+        letter-spacing: .08em;
+        display: flex;
+        align-items: center;
+        gap: .75rem;
+    }
+
+        .form-title::before {
+            content: '⚔';
+            font-size: 1.2rem;
+        }
+
+    .edit-badge {
+        font-family: 'Cinzel', serif;
+        font-size: .65rem;
+        letter-spacing: .14em;
+        color: var(--iron);
+        border: 1px solid rgba(138,143,168,.2);
+        border-radius: 3px;
+        padding: .2rem .6rem;
+        text-transform: uppercase;
+    }
+
+    .viking-form {
+        max-width: 560px;
+    }
+
+    .form-group {
+        margin-bottom: 1.5rem;
+    }
+
+    .form-label {
+        display: block;
+        font-family: 'Cinzel', serif;
+        font-size: .68rem;
+        font-weight: 600;
+        letter-spacing: .14em;
+        text-transform: uppercase;
+        color: var(--gold);
+        margin-bottom: .5rem;
+    }
+
+    .form-control {
+        width: 100%;
+        background: rgba(255,255,255,.03);
+        border: 1px solid var(--border-input);
+        border-radius: 4px;
+        color: var(--text);
+        font-family: 'Crimson Pro', Georgia, serif;
+        font-size: 1rem;
+        padding: .65rem 1rem;
+        transition: border-color .2s, box-shadow .2s;
+        outline: none;
+        box-sizing: border-box;
+    }
+
+        .form-control:focus {
+            border-color: var(--border-focus);
+            box-shadow: 0 0 0 3px rgba(201,168,76,.08);
+            background: var(--accent);
+        }
+
+    select.form-control option {
+        background: #13151e;
+        color: var(--text);
+    }
+
+    .field-validation-error {
+        display: block;
+        color: #e74c3c;
+        font-size: .82rem;
+        margin-top: .35rem;
+    }
+
+    .validation-summary-errors {
+        background: rgba(192,57,43,.1);
+        border-left: 3px solid #e74c3c;
+        border-radius: 4px;
+        padding: .75rem 1rem;
+        margin-bottom: 1.5rem;
+        font-size: .9rem;
+        color: #e74c3c;
+    }
+
+        .validation-summary-errors ul {
+            margin: 0;
+            padding-left: 1.2rem;
+        }
+
+    .form-actions {
+        display: flex;
+        gap: .75rem;
+        margin-top: 2rem;
+        padding-top: 1.5rem;
+        border-top: 1px solid var(--border);
+    }
+
+    .btn-rune {
+        display: inline-flex;
+        align-items: center;
+        gap: .5rem;
+        padding: .65rem 1.5rem;
+        border-radius: 4px;
+        font-family: 'Cinzel', serif;
+        font-size: .78rem;
+        font-weight: 600;
+        letter-spacing: .1em;
+        text-decoration: none;
+        border: 1px solid;
+        transition: all .2s;
+        cursor: pointer;
+    }
+
+        .btn-rune.primary {
+            border-color: var(--gold);
+            color: var(--gold);
+            background: transparent;
+        }
+
+            .btn-rune.primary:hover {
+                background: var(--gold);
+                color: #0e0f14;
+                box-shadow: 0 0 20px rgba(201,168,76,.3);
+            }
+
+        .btn-rune.secondary {
+            border-color: rgba(138,143,168,.3);
+            color: var(--iron);
+            background: transparent;
+        }
+
+            .btn-rune.secondary:hover {
+                border-color: var(--iron);
+                color: var(--text);
+            }
+
+        .btn-rune svg {
+            width: 15px;
+            height: 15px;
+        }
+</style>
+
+<div class="form-header">
+    <div class="form-title">Forjar al Guerrero</div>
+    <span class="edit-badge">Edición</span>
+</div>
+
+<div asp-validation-summary="All" class="validation-summary-errors"></div>
+
+<form asp-action="Edit" class="viking-form">
+
+    <input asp-for="Id" type="hidden" />
+
+    <div class="form-group">
+        <label asp-for="Name" class="form-label">Nombre del Guerrero</label>
+        <input asp-for="Name" class="form-control" />
+        <span asp-validation-for="Name" class="field-validation-error"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="BattlesWon" class="form-label">Batallas Ganadas</label>
+        <input asp-for="BattlesWon" class="form-control" type="number" min="0" />
+        <span asp-validation-for="BattlesWon" class="field-validation-error"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="FavoriteWeapon" class="form-label">Arma Favorita</label>
+        <input asp-for="FavoriteWeapon" class="form-control" />
+        <span asp-validation-for="FavoriteWeapon" class="field-validation-error"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="HonorLevel" class="form-label">Nivel de Honor</label>
+        <select asp-for="HonorLevel" class="form-control">
+            <option value="Low">Bajo</option>
+            <option value="Medium">Medio</option>
+            <option value="High">Alto</option>
+        </select>
+        <span asp-validation-for="HonorLevel" class="field-validation-error"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="DeathCause" class="form-label">Causa de Muerte</label>
+        <input asp-for="DeathCause" class="form-control" />
+        <span asp-validation-for="DeathCause" class="field-validation-error"></span>
+    </div>
+
+    <div class="form-actions">
+        <button type="submit" class="btn-rune primary">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v14a2 2 0 0 1-2 2z" /><polyline points="17 21 17 13 7 13 7 21" /><polyline points="7 3 7 8 15 8" /></svg>
+            Actualizar
+        </button>
+        <a asp-action="Index" class="btn-rune secondary">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12" /><polyline points="12 19 5 12 12 5" /></svg>
+            Volver
+        </a>
+    </div>
+
+</form>

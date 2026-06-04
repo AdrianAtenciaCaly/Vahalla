@@ -1,0 +1,8 @@
+<Solution>
+  <Project Path="Valhalla.Api/Valhalla.Api.csproj" Id="b8681c77-e2c4-40fb-8c90-3a32db9d7c2b" />
+  <Project Path="Valhalla.Application/Valhalla.Application.csproj" Id="65431f86-690d-4fc6-8472-d372aa46d71b" />
+  <Project Path="Valhalla.Domain/Valhalla.Domain.csproj" Id="a37dfaaa-3953-452d-9e2e-bb0cd3dab754" />
+  <Project Path="Valhalla.Infrastructure/Valhalla.Infrastructure.csproj" Id="c7b8198c-367b-4f81-aded-fe676a780042" />
+  <Project Path="Valhalla.Mvc/Valhalla.Mvc.csproj" Id="7cc292e7-6751-4915-b407-5cc5e3200322" />
+  <Project Path="Valhalla.Shared/Valhalla.Shared.csproj" Id="a6e4c578-e8ac-4105-b710-21e252fb2df1" />
+</Solution>
