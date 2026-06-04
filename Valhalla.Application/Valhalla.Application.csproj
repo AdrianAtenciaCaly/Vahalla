@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Valhalla.Domain\Valhalla.Domain.csproj" />
+    <ProjectReference Include="..\Valhalla.Shared\Valhalla.Shared.csproj" />
   </ItemGroup>
 
 </Project>

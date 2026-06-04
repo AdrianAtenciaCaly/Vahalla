@@ -1,104 +1,88 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Valhalla.Application.Interfaces;
-using Valhalla.Domain.Entities;
+using Valhalla.Application.Mappers;
+using Valhalla.Shared.Constants;
 using Valhalla.Shared.DTOs;
 
-namespace Valhalla.Api.Controllers
+namespace Valhalla.Api.Controllers;
+
+[ApiController]
+[Route("api/[controller]")]
+public class VikingsController : ControllerBase
 {
-    [ApiController]
-    [Route("api/[controller]")]
-    public class VikingsController : ControllerBase
+    private readonly IVikingRepository _repository;
+    private readonly IVikingClassificationService _service;
+
+    public VikingsController(
+        IVikingRepository repository,
+        IVikingClassificationService service)
     {
-        private readonly IVikingRepository _repository;
-        private readonly IVikingClassificationService _service;
+        _repository = repository;
+        _service = service;
+    }
 
-        public VikingsController( IVikingRepository repository,IVikingClassificationService service)
-        {
-            _repository = repository;
-            _service = service;
-        }
+    [HttpGet]
+    public IActionResult Get()
+    {
+        var result = _repository.GetAll().Select(VikingMapper.ToDto);
+        return Ok(result);
+    }
 
-        [HttpGet]
-        public IActionResult Get()
-        {
-            return Ok(_repository.GetAll());
-        }
+    [HttpGet("{id:guid}")]
+    public IActionResult Get(Guid id)
+    {
+        var viking = _repository.GetById(id);
 
-        [HttpGet("{id}")]
-        public IActionResult Get(Guid id)
-        {
-            var viking = _repository.GetById(id);
+        return viking is null
+            ? NotFound(new { message = ErrorMessages.Vikings.NotFound })
+            : Ok(VikingMapper.ToDto(viking));
+    }
 
-            if (viking == null)
-                return NotFound();
+    [HttpPost]
+    public IActionResult Post(VikingDto dto)
+    {
+        if (!ModelState.IsValid)
+            return BadRequest(new { message = ErrorMessages.Vikings.InvalidData });
 
-            return Ok(viking);
-        }
+        if (dto.BattlesWon < 0)
+            return BadRequest(new { message = ErrorMessages.Vikings.NegativeBattles });
 
-        [HttpPost]
-        public IActionResult Post(VikingDto dto)
-        {
-            if (!ModelState.IsValid)
-                return BadRequest(new{ message =  "Datos inválidos"});
-            
-            if (dto.BattlesWon < 0)
-                return BadRequest(new{message = "Las batallas no pueden ser negativas"});
-            
-            var viking = new Viking
-            {
-                Id = Guid.NewGuid(),
-                Name = dto.Name,
-                BattlesWon = dto.BattlesWon,
-                FavoriteWeapon = dto.FavoriteWeapon,
-                HonorLevel = dto.HonorLevel,
+        var viking = VikingMapper.ToEntity(dto);
 
-                DeathCause = dto.DeathCause
-            };
+        _service.Classify(viking);
+        _repository.Add(viking);
 
-            _service.Classify(viking);
+        return CreatedAtAction(nameof(Get), new { id = viking.Id }, VikingMapper.ToDto(viking));
+    }
 
-            _repository.Add(viking);
+    [HttpPut("{id:guid}")]
+    public IActionResult Put(Guid id, VikingDto dto)
+    {
+        if (!ModelState.IsValid)
+            return BadRequest(new { message = ErrorMessages.Vikings.InvalidData });
 
-            return Ok(viking);
-        }
+        var current = _repository.GetById(id);
 
-        [HttpPut("{id}")]
-        public IActionResult Put(Guid id,VikingDto dto)
-        {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
+        if (current is null)
+            return NotFound(new { message = ErrorMessages.Vikings.NotFound });
 
-            var current = _repository.GetById(id);
+        VikingMapper.ApplyChanges(current, dto);
 
-            if (current == null)
-                return NotFound();
+        _service.Classify(current);
+        _repository.Update(current);
 
-            current.Name = dto.Name;
+        return Ok(VikingMapper.ToDto(current));
+    }
 
-            current.BattlesWon = dto.BattlesWon;
+    [HttpDelete("{id:guid}")]
+    public IActionResult Delete(Guid id)
+    {
+        var viking = _repository.GetById(id);
 
-            current.FavoriteWeapon =
-                dto.FavoriteWeapon;
+        if (viking is null)
+            return NotFound(new { message = ErrorMessages.Vikings.NotFound });
 
-            current.HonorLevel =
-                dto.HonorLevel;
-
-            current.DeathCause =
-                dto.DeathCause;
-
-            _service.Classify(current);
-
-            _repository.Update(current);
-
-            return Ok(current);
-        }
-
-        [HttpDelete("{id}")]
-        public IActionResult Delete(Guid id)
-        {
-            _repository.Delete(id);
-
-            return Ok();
-        }
+        _repository.Delete(id);
+        return NoContent();
     }
 }
