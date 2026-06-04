@@ -1,4 +1,7 @@
 <Solution>
+  <Folder Name="/Elementos de la solución/">
+    <File Path="README.md" />
+  </Folder>
   <Project Path="Valhalla.Api/Valhalla.Api.csproj" Id="b8681c77-e2c4-40fb-8c90-3a32db9d7c2b" />
   <Project Path="Valhalla.Application/Valhalla.Application.csproj" Id="65431f86-690d-4fc6-8472-d372aa46d71b" />
   <Project Path="Valhalla.Domain/Valhalla.Domain.csproj" Id="a37dfaaa-3953-452d-9e2e-bb0cd3dab754" />
